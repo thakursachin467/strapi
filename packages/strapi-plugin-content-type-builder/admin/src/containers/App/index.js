@@ -19,6 +19,8 @@ import ModelPage from '../ModelPage';
 
 import Loader from './Loader';
 
+import { MenuProvider } from '../MenuProvider';
+
 import {
   addAttributeRelation,
   cancelNewContentType,
@@ -91,13 +93,7 @@ export class App extends React.Component {
         key={to}
         exact
         path={to}
-        render={props => (
-          <Component
-            {...this.props}
-            {...props}
-            canOpenModal={this.canOpenModal()}
-          />
-        )}
+        render={props => <Component {...this.props} {...props} canOpenModal={this.canOpenModal()} />}
       />
     );
   };
@@ -110,12 +106,14 @@ export class App extends React.Component {
     }
 
     return (
-      <div className={styles.app}>
-        <Switch>
-          {ROUTES.map(this.renderRoute)}
-          <Route component={NotFound} />
-        </Switch>
-      </div>
+      <MenuProvider value={{ models: this.props.models }}>
+        <div className={styles.app}>
+          <Switch>
+            {ROUTES.map(this.renderRoute)}
+            <Route component={NotFound} />
+          </Switch>
+        </div>
+      </MenuProvider>
     );
   }
 }
