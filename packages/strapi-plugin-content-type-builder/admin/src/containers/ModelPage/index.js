@@ -32,13 +32,13 @@ import LeftMenuSection from '../../components/LeftMenuSection';
 import LeftMenuSectionTitle from '../../components/LeftMenuSectionTitle';
 import LeftMenuLink from '../../components/LeftMenuLink';
 import ListTitle from '../../components/ListTitle';
-import NavMenu from '../../components/NavMenu';
 import Ul from '../../components/Ul';
 
 import AttributeForm from '../AttributeForm';
 import AttributesModalPicker from '../AttributesPickerModal';
 import ModelForm from '../ModelForm';
 import RelationForm from '../RelationForm';
+import Menu from '../Menu';
 
 import {
   addAttributeToExistingContentType,
@@ -52,10 +52,7 @@ import {
   submitTempContentType,
 } from '../App/actions';
 
-import CustomLink from './CustomLink';
-
 import styles from './styles.scss';
-import DocumentationSection from './DocumentationSection';
 
 /* eslint-disable react/sort-comp */
 /* eslint-disable no-extra-boolean-cast */
@@ -543,7 +540,7 @@ export class ModelPage extends React.Component {
               </LeftMenuSection>
             </LeftMenu> */}
 
-            <NavMenu models={models} />
+            <Menu />
 
             <div className="col-md-9">
               <div className={styles.componentsContainer}>

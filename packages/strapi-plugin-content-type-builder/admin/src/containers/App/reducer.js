@@ -43,6 +43,7 @@ export const initialState = fromJS({
   initialData: {},
   isLoading: true,
   models: List([]),
+  groups: List([]),
   modifiedData: {},
   newContentType: {
     collectionName: '',
@@ -214,13 +215,28 @@ function appReducer(state = initialState, action) {
         .update('newContentType', () => fromJS(initialState.get('newContentType')))
         .update('newContentTypeClone', () => fromJS(initialState.get('newContentType')));
     case GET_DATA_SUCCEEDED:
+      const groups = [
+        {
+          icon: 'fa-cube',
+          name: 'groupe 1',
+        },
+        {
+          icon: 'fa-cube',
+          name: 'groupe 2',
+        },
+        {
+          icon: 'fa-cube',
+          name: 'groupe 3',
+        },
+      ];
       return state
         .update('connections', () => List(action.connections))
         .update('initialData', () => fromJS(action.initialData))
         .update('isLoading', () => false)
         .update('modifiedData', () => fromJS(action.initialData))
         .updateIn(['newContentType', 'connection'], () => action.connections[0])
-        .update('models', () => List(fromJS(action.models)).sortBy(model => model.get('name')));
+        .update('models', () => List(fromJS(action.models)).sortBy(model => model.get('name')))
+        .update('groups', () => List(fromJS(groups)).sortBy(model => model.get('name')));
     case ON_CHANGE_EXISTING_CONTENT_TYPE_MAIN_INFOS:
       return state.updateIn(['modifiedData', ...action.keys], () => action.value);
     case ON_CHANGE_NEW_CONTENT_TYPE_MAIN_INFOS:

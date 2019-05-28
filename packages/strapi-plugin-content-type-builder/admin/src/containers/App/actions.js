@@ -130,7 +130,6 @@ export function getDataSucceeded({ allModels, models }, connections) {
 
     return acc;
   }, {});
-
   return {
     type: GET_DATA_SUCCEEDED,
     initialData,

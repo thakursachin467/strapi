@@ -106,7 +106,7 @@ export class App extends React.Component {
     }
 
     return (
-      <MenuProvider value={{ models: this.props.models }}>
+      <MenuProvider value={{ models: this.props.models, groups: this.props.groups }}>
         <div className={styles.app}>
           <Switch>
             {ROUTES.map(this.renderRoute)}
@@ -129,6 +129,7 @@ App.propTypes = {
   getData: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   models: PropTypes.array.isRequired,
+  groups: PropTypes.array.isRequired,
   onChangeExistingContentTypeMainInfos: PropTypes.func.isRequired,
   onChangeNewContentTypeMainInfos: PropTypes.func.isRequired,
   resetProps: PropTypes.func.isRequired,
