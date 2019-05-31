@@ -27,10 +27,6 @@ import pluginId from '../../pluginId';
 import AttributeLi from '../../components/AttributeLi';
 import Block from '../../components/Block';
 import Flex from '../../components/Flex';
-import LeftMenu from '../../components/LeftMenu';
-import LeftMenuSection from '../../components/LeftMenuSection';
-import LeftMenuSectionTitle from '../../components/LeftMenuSectionTitle';
-import LeftMenuLink from '../../components/LeftMenuLink';
 import ListTitle from '../../components/ListTitle';
 import Ul from '../../components/Ul';
 
@@ -242,13 +238,6 @@ export class ModelPage extends React.Component {
     return search;
   };
 
-  getSectionTitle = () => {
-    const base = `${pluginId}.menu.section.contentTypeBuilder.name.`;
-
-    /* istanbul ignore if */
-    return this.getModelsNumber() > 1 ? `${base}plural` : `${base}singular`;
-  };
-
   getSource = () => {
     const {
       match: {
@@ -443,28 +432,6 @@ export class ModelPage extends React.Component {
   displayNotificationCTNotSaved = () =>
     strapi.notification.info(`${pluginId}.notification.info.contentType.creating.notSaved`);
 
-  renderLinks = () => {
-    const { models } = this.props;
-    const links = models.map(model => {
-      const { isTemporary, name, source } = model;
-      const base = `/plugins/${pluginId}/models/${name}`;
-      const to = source ? `${base}&source=${source}` : base;
-
-      return (
-        <LeftMenuLink
-          key={name}
-          icon="fa fa-caret-square-o-right"
-          isTemporary={isTemporary}
-          name={name}
-          source={source}
-          to={to}
-        />
-      );
-    });
-
-    return links;
-  };
-
   renderLi = attribute => {
     const attributeInfos = get(this.getModelAttributes(), attribute, {});
 
@@ -526,22 +493,7 @@ export class ModelPage extends React.Component {
         </FormattedMessage>
         <div className="container-fluid">
           <div className="row">
-            {/* <LeftMenu>
-              <LeftMenuSection>
-                <LeftMenuSectionTitle id={this.getSectionTitle()} />
-                <ul>
-                  {this.renderLinks()}
-                  <CustomLink onClick={this.handleClickOpenModalCreateCT} />
-                </ul>
-              </LeftMenuSection>
-              <LeftMenuSection>
-                <LeftMenuSectionTitle id={`${pluginId}.menu.section.documentation.name`} />
-                <DocumentationSection />
-              </LeftMenuSection>
-            </LeftMenu> */}
-
             <Menu />
-
             <div className="col-md-9">
               <div className={styles.componentsContainer}>
                 <PluginHeader

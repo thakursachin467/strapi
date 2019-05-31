@@ -86,6 +86,8 @@
   "home.emptyContentType.title": "There are no Content Types available",
   "menu.section.contentTypeBuilder.name.plural": "Content Types",
   "menu.section.contentTypeBuilder.name.singular": "Content Type",
+  "menu.section.groups.name.plural": "Groups",
+  "menu.section.groups.name.singular": "Group",
   "menu.section.documentation.guide": "Read more about Content Types in our",
   "menu.section.documentation.guideLink": "guide.",
   "menu.section.documentation.name": "Documentation",

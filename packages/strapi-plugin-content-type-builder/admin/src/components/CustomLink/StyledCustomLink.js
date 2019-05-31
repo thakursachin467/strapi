@@ -1,0 +1,25 @@
+/**
+ *
+ * StyledCustomLink
+ *
+ */
+
+import styled from 'styled-components';
+
+const colors = {
+  blue: '#1c8fe5',
+};
+
+const StyledCustomLink = styled.div`
+  p {
+    color: ${colors.blue};
+    i {
+      -webkit-font-smoothing: subpixel-antialiased;
+    }
+  }
+  button {
+    cursor: pointer;
+  }
+`;
+
+export default StyledCustomLink;

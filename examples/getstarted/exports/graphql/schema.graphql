@@ -1,4 +1,4 @@
-type Articles {
+type Articles1 {
   id: ID!
   created_at: DateTime!
   updated_at: DateTime!
@@ -8,19 +8,19 @@ type Articles {
   posts(sort: String, limit: Int, start: Int, where: JSON): [Post]
 }
 
-input ArticlesInput {
+input Articles1Input {
   content2: String
   posts: [ID]
   title: String
   image: ID
 }
 
-input createArticlesInput {
-  data: ArticlesInput
+input createArticles1Input {
+  data: Articles1Input
 }
 
-type createArticlesPayload {
-  article: Articles
+type createArticles1Payload {
+  articles1: Articles1
 }
 
 input createPostInput {
@@ -52,12 +52,12 @@ The `DateTime` scalar represents a date and time following the ISO 8601 standard
 """
 scalar DateTime
 
-input deleteArticlesInput {
+input deleteArticles1Input {
   where: InputID
 }
 
-type deleteArticlesPayload {
-  article: Articles
+type deleteArticles1Payload {
+  articles1: Articles1
 }
 
 input deletePostInput {
@@ -84,7 +84,7 @@ type deleteUserPayload {
   user: UsersPermissionsUser
 }
 
-input editArticlesInput {
+input editArticles1Input {
   content2: String
   posts: [ID]
   title: String
@@ -153,12 +153,12 @@ scalar JSON
 """The `Long` scalar type represents 52-bit integers"""
 scalar Long
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | Articles | createArticlesPayload | updateArticlesPayload | deleteArticlesPayload | Post | createPostPayload | updatePostPayload | deletePostPayload | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload | MypluginTest
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | Articles1 | createArticles1Payload | updateArticles1Payload | deleteArticles1Payload | Post | createPostPayload | updatePostPayload | deletePostPayload | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload | MypluginTest
 
 type Mutation {
-  createArticles(input: createArticlesInput): createArticlesPayload
-  updateArticles(input: updateArticlesInput): updateArticlesPayload
-  deleteArticles(input: deleteArticlesInput): deleteArticlesPayload
+  createArticles1(input: createArticles1Input): createArticles1Payload
+  updateArticles1(input: updateArticles1Input): updateArticles1Payload
+  deleteArticles1(input: deleteArticles1Input): deleteArticles1Payload
   createPost(input: createPostInput): createPostPayload
   updatePost(input: updatePostInput): updatePostPayload
   deletePost(input: deletePostInput): deletePostPayload
@@ -192,7 +192,7 @@ type Post {
   id: ID!
   created_at: DateTime!
   updated_at: DateTime!
-  articles(sort: String, limit: Int, start: Int, where: JSON): [Articles]
+  articles(sort: String, limit: Int, start: Int, where: JSON): [Articles1]
 }
 
 input PostInput {
@@ -200,8 +200,8 @@ input PostInput {
 }
 
 type Query {
-  article(id: ID!): Articles
-  articles(sort: String, limit: Int, start: Int, where: JSON): [Articles]
+  articles1(id: ID!): Articles1
+  articles1S(sort: String, limit: Int, start: Int, where: JSON): [Articles1]
   post(id: ID!): Post
   posts(sort: String, limit: Int, start: Int, where: JSON): [Post]
   files(sort: String, limit: Int, start: Int, where: JSON): [UploadFile]
@@ -230,13 +230,13 @@ input TestInput {
   type: String!
 }
 
-input updateArticlesInput {
+input updateArticles1Input {
   where: InputID
-  data: editArticlesInput
+  data: editArticles1Input
 }
 
-type updateArticlesPayload {
-  article: Articles
+type updateArticles1Payload {
+  articles1: Articles1
 }
 
 input updatePostInput {

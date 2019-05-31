@@ -86,7 +86,6 @@ export class App extends React.Component {
 
   renderRoute = route => {
     const { component: Component, to } = route;
-
     /* istanbul ignore next */
     return (
       <Route
@@ -105,8 +104,16 @@ export class App extends React.Component {
       return <Loader />;
     }
 
+    console.log(this.props);
     return (
-      <MenuProvider value={{ models: this.props.models, groups: this.props.groups }}>
+      <MenuProvider
+        value={{
+          models: this.props.models,
+          groups: this.props.groups,
+          canOpenModal: this.canOpenModal(),
+          history: this.props.history,
+        }}
+      >
         <div className={styles.app}>
           <Switch>
             {ROUTES.map(this.renderRoute)}

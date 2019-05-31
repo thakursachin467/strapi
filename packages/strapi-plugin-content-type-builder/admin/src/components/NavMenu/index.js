@@ -6,14 +6,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { isArray } from 'lodash';
 import cn from 'classnames';
 
 import pluginId from '../../pluginId';
 
 import Link from '../Link';
 import StyledNavMenu from './StyledNavMenu';
-import DocumentationSection from '../DocumentationSection';
-import CustomLink from '../CustomLink';
 
 function NavMenu({ menuItems }) {
   const renderLinks = items => {
@@ -32,23 +32,30 @@ function NavMenu({ menuItems }) {
     return links;
   };
 
+  const renderContent = (item, customLink) => {
+    return isArray(item) ? (
+      <ul className="menu-list">
+        {renderLinks(item)}
+        <li>{customLink}</li>
+      </ul>
+    ) : (
+      item
+    );
+  };
+
   return (
     <StyledNavMenu className={cn('col-md-3')}>
       {menuItems.map(item => {
+        const { title, titleId, links, customLink } = item;
         return (
-          <section key={item.title}>
-            <h3>{item.title}</h3>
-            <ul>{renderLinks(item.links)}</ul>
-            <div>
-              <CustomLink onClick={() => {}} />
-            </div>
+          <section key={title}>
+            <h3>
+              <FormattedMessage id={titleId} />
+            </h3>
+            {renderContent(links, customLink)}
           </section>
         );
       })}
-      <div className="documentation">
-        <h3>Documentation</h3>
-        <DocumentationSection />
-      </div>
     </StyledNavMenu>
   );
 }
@@ -58,7 +65,12 @@ NavMenu.defaultProps = {
 };
 
 NavMenu.propTypes = {
-  menuItems: PropTypes.array,
+  menuItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      links: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
+    }),
+  ),
 };
 
 export default NavMenu;
