@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import { FormattedMessage } from 'react-intl';
 import pluginId from '../../pluginId';
@@ -21,12 +22,25 @@ function Link({ isTemporary, name, source, to }) {
         )}
         {isTemporary && (
           <FormattedMessage id={`${pluginId}.contentType.temporaryDisplay`}>
-            {msg => <Span>{msg}</Span>}
+            {msg => <span>{msg}</span>}
           </FormattedMessage>
         )}
       </p>
     </NavLink>
   );
 }
+
+Link.defaultProps = {
+  isTemporary: false,
+  name: null,
+  source: null,
+};
+
+Link.propTypes = {
+  isTemporary: PropTypes.bool,
+  name: PropTypes.string,
+  source: PropTypes.string,
+  to: PropTypes.string.isRequired,
+};
 
 export default Link;

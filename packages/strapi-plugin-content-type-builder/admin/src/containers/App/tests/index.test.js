@@ -44,6 +44,16 @@ describe('<App />', () => {
         },
         { icon: 'fa-cube', name: 'product', description: 'super api', fields: 6, isTemporary: false },
       ],
+      groups: [
+        {
+          icon: 'fa-cube',
+          name: 'group 1',
+        },
+        {
+          icon: 'fa-cube',
+          name: 'group 2',
+        },
+      ],
       modifiedData: {},
       onChangeExistingContentTypeMainInfos: jest.fn(),
       onChangeNewContentTypeMainInfos: jest.fn(),

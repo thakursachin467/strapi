@@ -9,5 +9,3 @@ export function MenuProvider({ value, children }) {
 export function useMenu() {
   return useContext(MenuContext);
 }
-
-export { MenuContext };

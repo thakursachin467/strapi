@@ -1,8 +1,6 @@
 import React from 'react';
 import pluginId from '../../pluginId';
 
-import { BrowserHistory } from 'react-router-dom';
-
 import { useMenu } from '../../containers/MenuProvider';
 
 import NavMenu from '../../components/NavMenu';

@@ -16,10 +16,10 @@ import Link from '../Link';
 import StyledNavMenu from './StyledNavMenu';
 
 function NavMenu({ menuItems }) {
-  const renderLinks = items => {
+  const renderLinks = (title, items) => {
     const links = items.map(model => {
       const { isTemporary, name, source } = model;
-      const base = `/plugins/${pluginId}/models/${name}`;
+      const base = `/plugins/${pluginId}/${title}/${name}`;
       const to = source ? `${base}&source=${source}` : base;
 
       return (
@@ -32,27 +32,27 @@ function NavMenu({ menuItems }) {
     return links;
   };
 
-  const renderContent = (item, customLink) => {
-    return isArray(item) ? (
+  const renderContent = item => {
+    const { customLink, links, title } = item;
+
+    return isArray(links) ? (
       <ul className="menu-list">
-        {renderLinks(item)}
+        {renderLinks(title, links)}
         <li>{customLink}</li>
       </ul>
     ) : (
-      item
+      links
     );
   };
 
   return (
     <StyledNavMenu className={cn('col-md-3')}>
       {menuItems.map(item => {
-        const { title, titleId, links, customLink } = item;
+        const { title, titleId } = item;
         return (
           <section key={title}>
-            <h3>
-              <FormattedMessage id={titleId} />
-            </h3>
-            {renderContent(links, customLink)}
+            <h3>{!!titleId ? <FormattedMessage id={titleId} /> : title}</h3>
+            {renderContent(item)}
           </section>
         );
       })}
@@ -68,7 +68,9 @@ NavMenu.propTypes = {
   menuItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
+      titleId: PropTypes.string,
       links: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
+      customLink: PropTypes.node,
     }),
   ),
 };

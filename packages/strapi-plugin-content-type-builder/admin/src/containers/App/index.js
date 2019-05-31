@@ -104,7 +104,6 @@ export class App extends React.Component {
       return <Loader />;
     }
 
-    console.log(this.props);
     return (
       <MenuProvider
         value={{

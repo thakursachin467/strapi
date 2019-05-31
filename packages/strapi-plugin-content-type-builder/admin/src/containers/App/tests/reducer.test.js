@@ -151,7 +151,8 @@ describe('appReducer', () => {
       .set('modifiedData', Map({}))
       .set('initialData', Map({}))
       .set('connections', List([]))
-      .set('models', List([]));
+      .set('models', List([]))
+      .set('groups', List([]));
 
     expect(appReducer(undefined, {})).toEqual(expected);
   });
@@ -682,16 +683,31 @@ describe('appReducer', () => {
       },
     };
     const connections = ['default'];
+    const groups = [
+      fromJS({
+        icon: 'fa-cube',
+        name: 'groupe 1',
+      }),
+      fromJS({
+        icon: 'fa-cube',
+        name: 'groupe 2',
+      }),
+      fromJS({
+        icon: 'fa-cube',
+        name: 'groupe 3',
+      }),
+    ];
 
     const expected = state
       .set('modifiedData', fromJS(initialData))
       .set('initialData', fromJS(initialData))
       .set('models', List(models))
+      .set('groups', List(groups))
       .set('isLoading', false)
       .setIn(['newContentType', 'connection'], 'default')
       .set('connections', List(connections));
 
-    expect(appReducer(state, getDataSucceeded({ allModels, models }, connections))).toEqual(expected);
+    expect(appReducer(state, getDataSucceeded({ allModels, models }, connections, groups))).toEqual(expected);
   });
 
   it('should handle the onChangeExistingContentTypeMainInfos action correctly', () => {
@@ -836,6 +852,7 @@ describe('appReducer', () => {
       initialData: {},
       isLoading: true,
       models: List([]),
+      groups: List([]),
       modifiedData: {},
       newContentType: {
         collectionName: '',
