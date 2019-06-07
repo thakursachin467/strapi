@@ -303,34 +303,6 @@ describe('<ModelPage />', () => {
         expect(getModelRelationShipsLength()).toEqual(1);
       });
     });
-
-    /*
-
-      it('should return a plural string for the user', () => {
-        const wrapper = shallow(<ModelPage {...props} />);
-        const { getSectionTitle } = wrapper.instance();
-
-        expect(getSectionTitle()).toContain('plural');
-      });
-    });*/
-
-    /*describe('RenderLinks', () => {
-      it('should render 5 links in the menu', () => {
-        const wrapper = shallow(<ModelPage {...props} />);
-        const links = wrapper.find(LeftMenuLink);
-
-        expect(links).toHaveLength(5);
-      });
-    });*/
-
-    /*describe('RenderLi', () => {
-      it('should render 8 attributes', () => {
-        const wrapper = shallow(<ModelPage {...props} />);
-        const links = wrapper.find(AttributeLi);
-
-        expect(links).toHaveLength(8);
-      });
-    });*/
   });
 });
 

@@ -19,7 +19,7 @@ import ModelPage from '../ModelPage';
 
 import Loader from './Loader';
 
-import { MenuProvider } from '../MenuProvider';
+import MenuContext from '../MenuProvider';
 
 import {
   addAttributeRelation,
@@ -105,7 +105,7 @@ export class App extends React.Component {
     }
 
     return (
-      <MenuProvider
+      <MenuContext.Provider
         value={{
           models: this.props.models,
           groups: this.props.groups,
@@ -119,7 +119,7 @@ export class App extends React.Component {
             <Route component={NotFound} />
           </Switch>
         </div>
-      </MenuProvider>
+      </MenuContext.Provider>
     );
   }
 }

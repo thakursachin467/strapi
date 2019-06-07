@@ -16,10 +16,10 @@ import Link from '../Link';
 import StyledNavMenu from './StyledNavMenu';
 
 function NavMenu({ menuItems }) {
-  const renderLinks = (title, items) => {
+  const renderLinks = (param, items) => {
     const links = items.map(model => {
       const { isTemporary, name, source } = model;
-      const base = `/plugins/${pluginId}/${title}/${name}`;
+      const base = `/plugins/${pluginId}/${param}/${name}`;
       const to = source ? `${base}&source=${source}` : base;
 
       return (
@@ -33,11 +33,11 @@ function NavMenu({ menuItems }) {
   };
 
   const renderContent = item => {
-    const { customLink, links, title } = item;
+    const { customLink, links, name } = item;
 
     return isArray(links) ? (
       <ul className="menu-list">
-        {renderLinks(title, links)}
+        {renderLinks(name, links)}
         <li>{customLink}</li>
       </ul>
     ) : (
@@ -49,8 +49,9 @@ function NavMenu({ menuItems }) {
     <StyledNavMenu className={cn('col-md-3')}>
       {menuItems.map(item => {
         const { title, titleId } = item;
+
         return (
-          <section key={title}>
+          <section key={titleId || title}>
             <h3>{!!titleId ? <FormattedMessage id={titleId} /> : title}</h3>
             {renderContent(item)}
           </section>

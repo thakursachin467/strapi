@@ -1,24 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import pluginId from '../../pluginId';
 
-import { useMenu } from '../../containers/MenuProvider';
+import MenuContext from '../../containers/MenuProvider';
 
 import NavMenu from '../../components/NavMenu';
 import DocumentationSection from '../../components/DocumentationSection';
 import CustomLink from '../../components/CustomLink';
 
+const getSectionTitle = (itemsTitle, models) => {
+  const base = `${pluginId}.menu.section.${itemsTitle}.name.`;
+
+  /* istanbul ignore if */
+  return models.length > 1 ? `${base}plural` : `${base}singular`;
+};
+
+const displayNotificationCTNotSaved = () =>
+  strapi.notification.info(`${pluginId}.notification.info.contentType.creating.notSaved`);
+
 function Menu() {
-  const { models, groups, canOpenModal, history } = useMenu();
-
-  const getSectionTitle = itemsTitle => {
-    const base = `${pluginId}.menu.section.${itemsTitle}.name.`;
-
-    /* istanbul ignore if */
-    return models.length > 1 ? `${base}plural` : `${base}singular`;
-  };
-
-  const displayNotificationCTNotSaved = () =>
-    strapi.notification.info(`${pluginId}.notification.info.contentType.creating.notSaved`);
+  const { models, groups, canOpenModal, history } = useContext(MenuContext);
 
   const handleClickOpenModalCreateCT = type => {
     const { push } = history;
@@ -35,13 +35,13 @@ function Menu() {
   const menuItems = [
     {
       title: 'models',
-      titleId: getSectionTitle('contentTypeBuilder'),
+      titleId: getSectionTitle('contentTypeBuilder', models),
       links: models,
       customLink: <CustomLink onClick={() => handleClickOpenModalCreateCT('model')} />,
     },
     {
       title: 'groups',
-      titleId: getSectionTitle('groups'),
+      titleId: getSectionTitle('groups', models),
       links: groups,
       customLink: <CustomLink onClick={() => handleClickOpenModalCreateCT('group')} />,
     },
@@ -56,3 +56,4 @@ function Menu() {
 }
 
 export default Menu;
+export { getSectionTitle };
