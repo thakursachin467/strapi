@@ -16,9 +16,7 @@ import pluginId from '../../pluginId';
 
 import HomePage from '../HomePage';
 import ModelPage from '../ModelPage';
-
 import Loader from './Loader';
-
 import MenuContext from '../MenuProvider';
 
 import {
@@ -47,7 +45,6 @@ import {
 import reducer from './reducer';
 import saga from './saga';
 import makeSelectApp from './selectors';
-
 import styles from './styles.scss';
 
 const ROUTES = [
@@ -67,7 +64,6 @@ export class App extends React.Component {
     this.props.getData();
   }
 
-  /* istanbul ignore next */
   componentDidUpdate(prevProps) {
     if (prevProps.shouldRefetchData !== this.props.shouldRefetchData) {
       this.props.getData();
@@ -86,19 +82,30 @@ export class App extends React.Component {
 
   renderRoute = route => {
     const { component: Component, to } = route;
-    /* istanbul ignore next */
+
     return (
       <Route
         key={to}
         exact
         path={to}
-        render={props => <Component {...this.props} {...props} canOpenModal={this.canOpenModal()} />}
+        render={props => (
+          <Component
+            {...this.props}
+            {...props}
+            canOpenModal={this.canOpenModal()}
+          />
+        )}
       />
     );
   };
 
   render() {
-    const { isLoading } = this.props;
+    const {
+      groups,
+      history: { push },
+      isLoading,
+      models,
+    } = this.props;
 
     if (isLoading) {
       return <Loader />;
@@ -107,10 +114,10 @@ export class App extends React.Component {
     return (
       <MenuContext.Provider
         value={{
-          models: this.props.models,
-          groups: this.props.groups,
           canOpenModal: this.canOpenModal(),
-          history: this.props.history,
+          groups,
+          models,
+          push,
         }}
       >
         <div className={styles.app}>
@@ -172,13 +179,13 @@ export function mapDispatchToProps(dispatch) {
       setTemporaryAttributeRelation,
       updateTempContentType,
     },
-    dispatch,
+    dispatch
   );
 }
 
 const withConnect = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 );
 const withReducer = strapi.injectReducer({ key: 'app', reducer, pluginId });
 const withSaga = strapi.injectSaga({ key: 'app', saga, pluginId });
@@ -186,5 +193,5 @@ const withSaga = strapi.injectSaga({ key: 'app', saga, pluginId });
 export default compose(
   withReducer,
   withSaga,
-  withConnect,
+  withConnect
 )(App);

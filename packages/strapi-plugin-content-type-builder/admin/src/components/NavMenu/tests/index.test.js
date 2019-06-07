@@ -76,9 +76,8 @@ describe('<NavMenu />', () => {
   });
 
   it('should render links title as string if titleId props does not exist', () => {
-
-
     const wrapper = shallow(<NavMenu {...defaultProps} titleId={} />);
+    
     expect(wrapper.find('h3').text()).toEqual('models');
   });
 });

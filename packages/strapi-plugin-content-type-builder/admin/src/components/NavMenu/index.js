@@ -24,7 +24,13 @@ function NavMenu({ menuItems }) {
 
       return (
         <li key={name}>
-          <Link key={name} isTemporary={isTemporary} name={name} source={source} to={to} />
+          <Link
+            key={name}
+            isTemporary={isTemporary}
+            name={name}
+            source={source}
+            to={to}
+          />
         </li>
       );
     });
@@ -33,11 +39,11 @@ function NavMenu({ menuItems }) {
   };
 
   const renderContent = item => {
-    const { customLink, links, name } = item;
+    const { customLink, links, title } = item;
 
     return isArray(links) ? (
       <ul className="menu-list">
-        {renderLinks(name, links)}
+        {renderLinks(title, links)}
         <li>{customLink}</li>
       </ul>
     ) : (
@@ -49,9 +55,10 @@ function NavMenu({ menuItems }) {
     <StyledNavMenu className={cn('col-md-3')}>
       {menuItems.map(item => {
         const { title, titleId } = item;
+        const itemTitle = title || titleId;
 
         return (
-          <section key={titleId || title}>
+          <section key={itemTitle}>
             <h3>{!!titleId ? <FormattedMessage id={titleId} /> : title}</h3>
             {renderContent(item)}
           </section>
@@ -68,11 +75,11 @@ NavMenu.defaultProps = {
 NavMenu.propTypes = {
   menuItems: PropTypes.arrayOf(
     PropTypes.shape({
-      title: PropTypes.string,
+      title: PropTypes.string.isRequired,
       titleId: PropTypes.string,
       links: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
       customLink: PropTypes.node,
-    }),
+    })
   ),
 };
 

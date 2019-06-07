@@ -6,6 +6,7 @@
 
 import styled from 'styled-components';
 
+// Prepare for theming
 const colors = {
   blue: '#1c8fe5',
 };

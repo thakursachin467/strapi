@@ -15,6 +15,7 @@ describe('<App />', () => {
       cancelNewContentType: jest.fn(),
       deleteModel: jest.fn(),
       getData: jest.fn(),
+      history: { push: jest.fn() },
       initialData: {},
       isLoading: true,
       models: [
@@ -42,7 +43,13 @@ describe('<App />', () => {
           source: 'users-permissions',
           isTemporary: false,
         },
-        { icon: 'fa-cube', name: 'product', description: 'super api', fields: 6, isTemporary: false },
+        {
+          icon: 'fa-cube',
+          name: 'product',
+          description: 'super api',
+          fields: 6,
+          isTemporary: false,
+        },
       ],
       groups: [
         {
