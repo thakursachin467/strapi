@@ -520,7 +520,8 @@
             "type": "array",
             "items": {
               "required": [
-                "id"
+                "id",
+                "ingredients"
               ],
               "properties": {
                 "id": {
@@ -540,6 +541,9 @@
                 },
                 "image": {
                   "type": "string"
+                },
+                "ingredients": {
+                  "type": "group"
                 }
               }
             }

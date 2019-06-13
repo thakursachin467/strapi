@@ -510,7 +510,8 @@
     "schemas": {
       "Articles": {
         "required": [
-          "id"
+          "id",
+          "ingredients"
         ],
         "properties": {
           "id": {
@@ -586,10 +587,16 @@
                 "type": "string"
               }
             }
+          },
+          "ingredients": {
+            "type": "group"
           }
         }
       },
       "NewArticles": {
+        "required": [
+          "ingredients"
+        ],
         "properties": {
           "content2": {
             "type": "string"
@@ -602,6 +609,9 @@
           },
           "title": {
             "type": "string"
+          },
+          "ingredients": {
+            "type": "group"
           }
         }
       }
