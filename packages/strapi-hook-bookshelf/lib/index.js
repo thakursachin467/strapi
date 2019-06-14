@@ -94,6 +94,19 @@ module.exports = function(strapi) {
             ORM.plugin('pagination');
           }
 
+          const groupsModels = {};
+          Object.keys(strapi.groups).forEach(groupKey => {
+            const schema = strapi.groups[groupKey];
+
+            // TODO: validate group schema in the core
+
+            groupsModels[groupKey] = ORM.Model.extend({
+              tableName: schema.collectionName,
+              hasTimestamps: true,
+              defaults: createDefaults(schema.attributes),
+            });
+          });
+
           const mountModels = (models, target, plugin = false) => {
             // Parse every authenticated model.
             _.forEach(models, (definition, model) => {
@@ -190,13 +203,50 @@ module.exports = function(strapi) {
                 global[definition.globalName] = {};
               }
 
+              const hasGroups =
+                Object.values(definition.attributes).filter(({ type } = {}) => {
+                  return type && type === 'group';
+                }).length > 0;
+
+              if (hasGroups) {
+                const relatedGroups = Object.keys(definition.attributes).filter(
+                  key => definition.attributes[key].type === 'group'
+                );
+
+                // create group model
+                const joinTable = `${definition.collectionName}_groups`;
+                const groupsModel = ORM.Model.extend({
+                  tableName: joinTable,
+                  slice() {
+                    return this.morphTo(
+                      'slice',
+                      ...relatedGroups.map(key => {
+                        groupsModels[key];
+                      })
+                    );
+                  },
+                });
+
+                relatedGroups.forEach(name => {
+                  loadedModel[name] = function() {
+                    return this.hasMany(groupsModel).query(qb => {
+                      qb.where('field', name).orderBy('order');
+                    });
+                  };
+                });
+
+                ORM.knex.schema.createTableIfNotExists(joinTable, table => {
+                  table.string('field');
+                  table.string('slice_type');
+                  table.integer('slice_id');
+                  table.integer('recipe_id');
+                  table.timestamps(null, true);
+                });
+              }
+
               // Add every relationships to the loaded model for Bookshelf.
               // Basic attributes don't need this-- only relations.
               _.forEach(definition.attributes, (details, name) => {
-                if (details.type === 'group') {
-                  console.log('Handle group');
-                }
-
                 if (details.type !== undefined) {
                   return;
                 }
@@ -240,48 +290,26 @@ module.exports = function(strapi) {
 
                 switch (verbose) {
                   case 'hasOne': {
-                    const FK = details.plugin
-                      ? _.findKey(
-                          strapi.plugins[details.plugin].models[details.model]
-                            .attributes,
-                          details => {
-                            if (
-                              details.hasOwnProperty('model') &&
-                              details.model === model &&
-                              details.hasOwnProperty('via') &&
-                              details.via === name
-                            ) {
-                              return details;
-                            }
-                          }
-                        )
-                      : _.findKey(
-                          strapi.models[details.model].attributes,
-                          details => {
-                            if (
-                              details.hasOwnProperty('model') &&
-                              details.model === model &&
-                              details.hasOwnProperty('via') &&
-                              details.via === name
-                            ) {
-                              return details;
-                            }
-                          }
-                        );
+                    const target = details.plugin
+                      ? strapi.plugins[details.plugin].models[details.model]
+                      : strapi.models[details.model];
 
-                    const columnName = details.plugin
-                      ? _.get(
-                          strapi.plugins,
-                          `${details.plugin}.models.${
-                            details.model
-                          }.attributes.${FK}.columnName`,
-                          FK
-                        )
-                      : _.get(
-                          strapi.models,
-                          `${details.model}.attributes.${FK}.columnName`,
-                          FK
-                        );
+                    const FK = _.findKey(target.attributes, details => {
+                      if (
+                        details.hasOwnProperty('model') &&
+                        details.model === model &&
+                        details.hasOwnProperty('via') &&
+                        details.via === name
+                      ) {
+                        return details;
+                      }
+                    });
+
+                    const columnName = _.get(
+                      target.attributes,
+                      [FK, 'columnName'],
+                      FK
+                    );
 
                     loadedModel[name] = function() {
                       return this.hasOne(GLOBALS[globalId], columnName);

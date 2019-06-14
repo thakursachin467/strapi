@@ -1,6 +1,33 @@
 const _ = require('lodash');
 const { models: utilsModels } = require('strapi-utils');
 
+const createTable = (name, attributes, options) => {
+  knex.createTableIfNotExists(name, table => {
+    attributes.forEach(attribute => {
+      const {
+        name,
+        type,
+        default: defaultValue,
+        nullable = true,
+        unique = false,
+        constraints,
+        index,
+      } = attribute;
+
+      const col = table.specificType(name, getType(type));
+
+      if (defaultValue !== undefined) col.defaultTo(defaultValue);
+      if (nullable === false) col.notNullable();
+      if (unique === true) table.unique(name);
+      if (unique === true) col.unique();
+
+      // TODO: handle foreign keys
+    });
+
+    // TODO: handle global database options (indexes, constraints, uniques)
+  });
+};
+
 /* global StrapiConfigs */
 module.exports = async ({
   ORM,
