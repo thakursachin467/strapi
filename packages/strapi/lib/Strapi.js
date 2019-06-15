@@ -284,9 +284,6 @@ class Strapi extends EventEmitter {
 
     await bootstrap(this);
 
-    // init service manager
-    this.initServices();
-
     // Usage.
     await utils.usage(this.config);
 
