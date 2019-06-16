@@ -6,7 +6,7 @@
 
 // Core
 const path = require('path');
-
+const fs = require('fs');
 // Public node modules.
 const _ = require('lodash');
 const bookshelf = require('bookshelf');
@@ -34,29 +34,29 @@ const defaults = {
 module.exports = function(strapi) {
   function initialize(cb) {
     const GLOBALS = {};
-    const databaseUpdates = [];
+
     const connections = _.pickBy(
       strapi.config.connections,
       ({ connector }) => connector === 'strapi-hook-bookshelf'
     );
 
-    _.forEach(connections, (connection, connectionName) => {
-      // Apply defaults
+    const connectionsPromises = Object.keys(connections).map(connectionName => {
+      const connection = connections[connectionName];
       _.defaults(connection.settings, strapi.config.hook.settings.bookshelf);
 
       // Create Bookshelf instance for this connection.
       const ORM = new bookshelf(strapi.connections[connectionName]);
 
-      try {
+      const initFunctionPath = path.resolve(
+        strapi.config.appPath,
+        'config',
+        'functions',
+        'bookshelf.js'
+      );
+
+      if (fs.existsSync(initFunctionPath)) {
         // Require `config/functions/bookshelf.js` file to customize connection.
-        require(path.resolve(
-          strapi.config.appPath,
-          'config',
-          'functions',
-          'bookshelf.js'
-        ))(ORM, connection);
-      } catch (err) {
-        // This is not an error if the file is not found.
+        require(initFunctionPath)(ORM, connection);
       }
 
       // Load plugins
@@ -65,33 +65,34 @@ module.exports = function(strapi) {
         ORM.plugin('pagination');
       }
 
-      const groupsModels = {};
-      Object.keys(strapi.groups).forEach(groupKey => {
-        const schema = strapi.groups[groupKey];
-
-        // TODO: validate group schema in the core
-
-        groupsModels[groupKey] = ORM.Model.extend({
-          tableName: schema.collectionName,
-          hasTimestamps: true,
-          defaults: createDefaults(schema.attributes),
-        });
-      });
-
       const ctx = {
         GLOBALS,
         connection,
-        databaseUpdates,
         ORM,
-        groupsModels,
       };
 
       return Promise.all([
+        mountGroups(connectionName, ctx),
         mountApis(connectionName, ctx),
         mountAdmin(connectionName, ctx),
         mountPlugins(connectionName, ctx),
-      ]).then(() => cb(), cb);
+      ]);
     });
+
+    return Promise.all(connectionsPromises).then(() => cb(), err => cb(err));
+  }
+
+  function mountGroups(connectionName, ctx) {
+    const options = {
+      models: _.pickBy(
+        strapi.groups,
+        ({ connection }) => connection === connectionName
+      ),
+      target: strapi.groups,
+      plugin: false,
+    };
+
+    return mountModels(options, ctx);
   }
 
   function mountApis(connectionName, ctx) {

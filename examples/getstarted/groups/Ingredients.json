@@ -1,5 +1,5 @@
 {
-  "collectionName": "ingredients",
+  "collectionName": "group_ingredients",
   "attributes": {
     "name": {
       "type": "string",

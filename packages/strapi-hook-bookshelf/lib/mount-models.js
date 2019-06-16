@@ -25,10 +25,10 @@ const getDatabaseName = connection => {
 };
 
 module.exports = ({ models, target, plugin = false }, ctx) => {
-  const { GLOBALS, connection, ORM, groupsModels } = ctx;
+  const { GLOBALS, connection, ORM } = ctx;
 
   // Parse every authenticated model.
-  const updates = Object.keys(models).map(model => {
+  const updates = Object.keys(models).map(async model => {
     const definition = models[model];
     definition.globalName = _.upperFirst(_.camelCase(definition.globalId));
     definition.associations = [];
@@ -116,37 +116,37 @@ module.exports = ({ models, target, plugin = false }, ctx) => {
       }).length > 0;
 
     if (hasGroups) {
-      const relatedGroups = Object.keys(definition.attributes).filter(
+      const groupAttributes = Object.keys(definition.attributes).filter(
         key => definition.attributes[key].type === 'group'
       );
 
       // create group model
       const joinTable = `${definition.collectionName}_groups`;
-      const groupsModel = ORM.Model.extend({
+      const joinModel = ORM.Model.extend({
         tableName: joinTable,
         slice() {
           return this.morphTo(
             'slice',
-            ...relatedGroups.map(key => {
-              groupsModels[key];
-            })
+            ...groupAttributes.map(key => GLOBALS[strapi.groups[key].globalId])
           );
         },
       });
 
-      relatedGroups.forEach(name => {
+      groupAttributes.forEach(name => {
         loadedModel[name] = function() {
-          return this.hasMany(groupsModel).query(qb => {
+          return this.hasMany(joinModel).query(qb => {
             qb.where('field', name).orderBy('order');
           });
         };
       });
 
-      ORM.knex.schema.createTableIfNotExists(joinTable, table => {
+      await ORM.knex.schema.createTableIfNotExists(joinTable, table => {
+        table.increments();
         table.string('field');
+        table.integer('order').unsigned();
         table.string('slice_type');
-        table.integer('slice_id');
-        table.integer('recipe_id');
+        table.integer('slice_id').unsigned();
+        table.integer(`${pluralize.singular(model)}_id`).unsigned();
         table.timestamps(null, true);
       });
     }
